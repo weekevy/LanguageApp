@@ -1,0 +1,30 @@
+{
+  "name": "linguatube",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "predev": "npm run build --silent --workspace @linguatube/shared",
+    "dev": "concurrently --kill-others-on-fail --kill-signal SIGTERM --kill-timeout 5000 --teardown \"node scripts/stop-dev.mjs\" --names API,WEB,ANDROID --prefix-colors cyan,magenta,yellow --prefix \"[{name}]\" \"npm run dev --silent --workspace @linguatube/server\" \"npm run dev --silent --workspace @linguatube/client\" \"node scripts/android-dev.mjs\"",
+    "android:setup": "npm run build --workspace @linguatube/client && npm exec --workspace @linguatube/client -- cap add android",
+    "android:sync": "npm run build --workspace @linguatube/client && npm run cap:sync --workspace @linguatube/client",
+    "android:open": "npm run cap:open --workspace @linguatube/client",
+    "build": "npm run build --workspace @linguatube/shared && npm run build --workspace @linguatube/server && npm run build --workspace @linguatube/client",
+    "test": "npm run build --workspace @linguatube/shared && npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run build --workspace @linguatube/shared && npm run typecheck --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7",
+    "prettier": "^3.6.2"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}

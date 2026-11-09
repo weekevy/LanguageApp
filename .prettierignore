@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+.git
+workspace/prompt
+package-lock.json

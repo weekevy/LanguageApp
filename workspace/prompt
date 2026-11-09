@@ -1,0 +1,1145 @@
+# LinguaTube — Master AI Coding Agent Prompt
+
+Execution-readyFull-stack SaaSReact + TypeScript
+
+Writing
+
+# MASTER PROJECT INSTRUCTIONS
+
+# Build LinguaTube — A Premium YouTube Language Learning SaaS
+
+## 1\. YOUR ROLE AND OBJECTIVE
+
+Act as a senior full-stack software architect, senior React/TypeScript engineer, backend engineer, UI/UX designer, and product engineer.
+
+Your task is to design and implement a polished, responsive, scalable SaaS application called **LinguaTube**.
+
+LinguaTube transforms ordinary YouTube videos into interactive language-learning experiences.
+
+Users should be able to paste a YouTube URL, watch the video, read a synchronized transcript, see translations, customize their reading experience, and interact with video subtitles to improve their language comprehension.
+
+The result must feel like a real commercial SaaS product, not a generic AI-generated dashboard or a basic prototype.
+
+### Primary objective
+
+Deliver a fully working MVP with:
+
+1. A beautiful, premium-quality interface.
+2. A functional YouTube video player.
+3. A synchronized transcript system.
+4. Per-line translations.
+5. A comprehensive transcript customization system.
+6. Video suggestions.
+7. Freemium subscription logic.
+8. A functional backend API.
+9. Reusable and maintainable architecture.
+10. A development environment that works without requiring paid third-party APIs.
+
+**Important:** Prioritize working functionality over decorative complexity. Never implement buttons, switches, or controls that look functional but do nothing.
+
+---
+
+# 2\. DEVELOPMENT WORKFLOW — FOLLOW STRICTLY
+
+Before writing code, inspect the existing project directory.
+
+Determine whether the project is empty, partially implemented, or already contains an application.
+
+Do not unnecessarily overwrite working code.
+
+Follow this development sequence:
+
+### Phase 1 — Architecture and planning
+
+- Inspect the repository.
+- Identify the existing framework and dependencies.
+- Define the application architecture.
+- Establish shared TypeScript types.
+- Define frontend/backend communication contracts.
+- Identify external API dependencies.
+- Create a clear implementation plan.
+
+### Phase 2 — Project foundation
+
+- Configure React, Vite, TypeScript, and TailwindCSS.
+- Configure the Express backend.
+- Configure root-level npm workspaces.
+- Install and configure dependencies.
+- Establish environment variables.
+- Implement the API client.
+- Create reusable UI primitives.
+
+### Phase 3 — Core application
+
+Implement:
+
+- Application layout.
+- Navigation.
+- Routing.
+- Home page.
+- YouTube video input.
+- Video player.
+- Transcript functionality.
+- Translation functionality.
+- Transcript settings.
+- Video suggestions.
+
+### Phase 4 — SaaS functionality
+
+Implement:
+
+- Free-tier restrictions.
+- Pro-tier state.
+- Usage tracking.
+- Authentication mock.
+- Upgrade interface.
+- Pricing page.
+- Paywall interactions.
+
+### Phase 5 — Backend
+
+Implement API routes, controllers, services, validation, middleware, and mock providers.
+
+### Phase 6 — Quality assurance
+
+- Run TypeScript checks.
+- Run frontend production build.
+- Run backend build.
+- Test API endpoints.
+- Test responsive layouts.
+- Fix runtime errors.
+- Fix broken interactions.
+- Verify loading, error, and empty states.
+
+Do not declare the project finished until the application builds successfully.
+
+If you encounter an issue, investigate and fix it instead of silently working around it.
+
+---
+
+# 3\. TECHNOLOGY STACK
+
+Use the following technologies.
+
+## Frontend
+
+- React 18+
+- Vite
+- TypeScript with strict mode
+- TailwindCSS
+- React Router v6
+- Framer Motion
+- Lucide React
+- Zustand
+- Axios or Fetch API
+- React Hot Toast
+
+## Backend
+
+- Node.js
+- Express.js
+- TypeScript
+- Zod for validation
+- Prisma ORM (prepare the architecture for database integration)
+- PostgreSQL-ready architecture
+- Redis-ready caching architecture
+
+## Development tools
+
+- npm workspaces
+- concurrently
+- tsx
+- ESLint
+- Prettier
+
+Do not introduce unnecessary dependencies.
+
+Do not use multiple libraries to solve the same problem.
+
+---
+
+# 4\. PROJECT STRUCTURE
+
+Create a scalable monorepo.
+
+Use this structure:
+
+linguatube/ │ ├── client/ │ ├── public/ │ ├── src/ │ │ ├── assets/ │ │ ├── components/ │ │ │ ├── ui/ │ │ │ ├── layout/ │ │ │ ├── video/ │ │ │ ├── transcript/ │ │ │ ├── settings/ │ │ │ └── common/ │ │ │ │ │ ├── pages/ │ │ ├── features/ │ │ │ ├── video/ │ │ │ ├── transcript/ │ │ │ ├── translation/ │ │ │ ├── suggestions/ │ │ │ ├── subscription/ │ │ │ └── authentication/ │ │ │ │ │ ├── hooks/ │ │ ├── lib/ │ │ ├── store/ │ │ ├── types/ │ │ ├── styles/ │ │ ├── App.tsx │ │ └── main.tsx │ │ │ ├── index.html │ ├── package.json │ ├── tailwind.config.ts │ ├── tsconfig.json │ └── vite.config.ts │ ├── server/ │ ├── src/ │ │ ├── routes/ │ │ ├── controllers/ │ │ ├── services/ │ │ ├── providers/ │ │ ├── middleware/ │ │ ├── validators/ │ │ ├── lib/ │ │ ├── utils/ │ │ ├── config/ │ │ ├── types/ │ │ └── index.ts │ │ │ ├── prisma/ │ ├── package.json │ └── tsconfig.json │ ├── shared/ │ ├── types/ │ └── schemas/ │ ├── .env.example ├── package.json ├── README.md └── .gitignore
+
+You may introduce additional folders when technically justified, but maintain clear separation between presentation, business logic, data access, and API communication.
+
+Avoid oversized components. Split complex functionality into smaller components and hooks.
+
+---
+
+# 5\. PRODUCT DESIGN AND USER EXPERIENCE
+
+## Overall design direction
+
+Create an interface inspired by the quality of:
+
+- Linear
+- Vercel
+- Framer
+- Notion
+- Descript
+- Readwise
+
+The interface should feel premium, elegant, modern, and intuitive.
+
+Avoid generic dashboard templates.
+
+Use:
+
+- Generous spacing.
+- Beautiful typography.
+- Subtle borders.
+- Sophisticated gradients.
+- Soft shadows.
+- Rounded cards.
+- Smooth transitions.
+- Carefully designed empty states.
+- Consistent iconography.
+
+The product should look like a real startup SaaS that could be commercially launched.
+
+## Color palette
+
+Dark theme:
+
+- Background: #0B0B12
+- Surface: #14141F
+- Elevated surface: #1C1C2A
+- Primary: #6D5EFC
+- Secondary: #A78BFA
+- Accent: #22D3EE
+- Main text: #F5F5FA
+- Muted text: #9292A5
+- Border: rgba(255,255,255,0.08)
+
+Light theme:
+
+- Background: #FAFAFC
+- Surface: #FFFFFF
+- Primary: #6D5EFC
+- Accent: #22D3EE
+- Main text: #171725
+- Muted text: #737387
+- Border: #E8E8F0
+
+Create reusable Tailwind design tokens.
+
+Never scatter arbitrary colors throughout components.
+
+## Typography
+
+Use Inter for the main interface.
+
+Allow transcript typography to be customized independently.
+
+Support:
+
+- Sans-serif.
+- Serif.
+- Monospace.
+- OpenDyslexic, if its font asset is available.
+
+## Animation rules
+
+Use Framer Motion for interactive animations.
+
+Implement:
+
+- Page transitions.
+- Modal transitions.
+- Sidebar transitions.
+- Settings drawer transitions.
+- Transcript line interactions.
+- Hover effects.
+- Loading transitions.
+
+Keep animations subtle and purposeful.
+
+Do not animate the same CSS properties through competing CSS and Framer Motion systems.
+
+Respect reduced-motion accessibility preferences.
+
+---
+
+# 6\. APPLICATION LAYOUT
+
+## Desktop layout
+
+Implement:
+
+- Fixed left sidebar.
+- Main content area.
+- Top navigation bar.
+- Optional contextual settings panel.
+
+Sidebar navigation:
+
+1. Home
+2. Speaking
+3. Writing
+4. Shadowing
+5. Pronunciation
+6. Upgrade
+7. Settings
+
+Each navigation item should have:
+
+- Lucide icon.
+- Label.
+- Active state.
+- Hover state.
+- Accessible keyboard interaction.
+
+## Mobile layout
+
+On smaller screens:
+
+- Replace the desktop sidebar with a bottom navigation or responsive drawer.
+- Stack video and transcript vertically.
+- Keep controls accessible.
+- Avoid horizontal overflow.
+- Ensure touch interactions work correctly.
+- Keep important actions visible.
+
+Use responsive breakpoints at 640px, 768px, 1024px, and 1280px.
+
+---
+
+# 7\. HOMEPAGE — THE CORE PRODUCT
+
+The homepage is the most important part of the application.
+
+Spend the majority of development effort making this experience excellent.
+
+## Section A — Hero and video input
+
+Create an attractive hero section containing:
+
+- LinguaTube logo.
+- Clear headline.
+- Short explanatory subtitle.
+- YouTube URL input.
+- Load Video button.
+- Example video suggestions.
+
+Suggested headline:
+
+"Learn languages through the videos you love."
+
+Suggested subtitle:
+
+"Turn any YouTube video into an interactive language-learning experience with synchronized transcripts and instant translations."
+
+### Input behavior
+
+The input must:
+
+- Accept YouTube URLs.
+- Validate supported YouTube URL formats.
+- Extract the video ID.
+- Display validation errors.
+- Support Enter key submission.
+- Display loading state.
+- Prevent duplicate submissions.
+- Show meaningful errors.
+
+Support:
+
+- youtube.com/watch?v=
+- youtu.be/
+- youtube.com/embed/
+- youtube.com/shorts/
+
+Never trust a client-provided video ID without server-side validation.
+
+## Section B — Video player
+
+Create a reusable VideoPlayer component.
+
+Requirements:
+
+- YouTube embedded player.
+- Responsive 16:9 aspect ratio.
+- Play/pause support.
+- Current playback time tracking.
+- Duration tracking when available.
+- Seek functionality.
+- Loading state.
+- Error state.
+- Video title and metadata where available.
+
+Use the official YouTube IFrame Player API where practical.
+
+Create a player abstraction so another provider can be integrated later.
+
+The video player must communicate playback updates to the transcript system.
+
+## Section C — Transcript interface
+
+This is the signature feature of LinguaTube.
+
+Create a premium transcript panel.
+
+Design:
+
+- Rounded glassmorphic card.
+- Subtle gradient border.
+- Scrollable content.
+- Custom scrollbar.
+- Header with language information.
+- Translation visibility controls.
+- Settings button.
+- Responsive layout.
+
+### Transcript data model
+
+Each transcript line must contain:
+
+- id
+- start
+- end
+- text
+- language
+- translatedText
+- isTranslated
+
+Use seconds for timestamps.
+
+Example:
+
+{ "id": "line-1", "start": 2.4, "end": 5.8, "text": "Hello, how are you doing today?", "language": "en", "translatedText": "Bonjour, comment allez-vous aujourd'hui ?" }
+
+### Transcript interactions
+
+Each line must support:
+
+1. Displaying the original text.
+2. Displaying its translation.
+3. Toggling translation visibility.
+4. Clicking to seek to its timestamp.
+5. Highlighting the active line.
+6. Keyboard navigation.
+7. Hover feedback.
+8. Loading and translation states.
+
+### Video synchronization
+
+Synchronize transcript lines with video playback.
+
+When the video plays:
+
+- Identify the active transcript line based on playback time.
+- Highlight the active line.
+- Automatically scroll the transcript panel to keep the active line visible.
+- Avoid excessive scrolling on every playback update.
+
+When a user clicks a transcript line:
+
+- Seek the player to that line's start timestamp.
+- Update the active line.
+
+Use efficient timestamp lookup rather than iterating over every transcript line on every playback event when unnecessary.
+
+## Section D — Translation system
+
+Implement a translation service abstraction.
+
+Support configurable target languages.
+
+Initial languages:
+
+- English
+- French
+- Arabic
+- Spanish
+- German
+- Italian
+- Portuguese
+- Japanese
+- Chinese
+
+The translation system must support:
+
+- Individual line translation.
+- Bulk translation.
+- Translation caching.
+- Loading indicators.
+- Error handling.
+- Retry functionality.
+
+Create a provider interface for future DeepL, Google Translate, or another translation API.
+
+### Mock mode
+
+When no translation API key exists:
+
+- Use deterministic sample translations where available.
+- Clearly distinguish mock data from real translation results.
+- Never pretend a fake translation is an authentic API result.
+
+---
+
+# 8\. TRANSCRIPT CUSTOMIZATION SETTINGS
+
+Create a dedicated settings panel accessible from the transcript.
+
+Use a collapsible drawer or popover.
+
+All settings must immediately affect the transcript display.
+
+### Typography settings
+
+- Font family.
+- Font size.
+- Font weight.
+- Line height.
+- Text alignment.
+
+### Appearance settings
+
+- Light theme.
+- Dark theme.
+- Sepia theme.
+- High-contrast theme.
+- Transcript background opacity.
+- Transcript border visibility.
+- Active line highlight color.
+
+### Content settings
+
+- Show original text.
+- Show translations.
+- Show timestamps.
+- Show speaker labels when available.
+- Translation language.
+
+### Behavior settings
+
+- Auto-scroll active line.
+- Auto-hide translations.
+- Highlight active words when word timestamps are available.
+- Keep active line centered.
+
+Persist user preferences using Zustand and localStorage.
+
+Debounce settings that would otherwise trigger expensive rendering or persistence.
+
+---
+
+# 9\. VIDEO SUGGESTIONS
+
+Create a reusable VideoSuggestions component.
+
+Display attractive video cards containing:
+
+- Thumbnail.
+- Video title.
+- Channel name.
+- Duration.
+- Language.
+- Difficulty level.
+- Load video action.
+
+Difficulty levels:
+
+- Beginner.
+- Intermediate.
+- Advanced.
+
+Use mock suggestions initially.
+
+Clicking a card must load the selected video into the main player and retrieve its transcript.
+
+Avoid using random or broken thumbnails.
+
+Provide a fallback image when a thumbnail is unavailable.
+
+---
+
+# 10\. OTHER APPLICATION PAGES
+
+Implement these routes:
+
+- /
+- /speaking
+- /writing
+- /shadowing
+- /pronunciation
+- /pricing
+- /settings
+
+Speaking, Writing, Shadowing, and Pronunciation must remain placeholders.
+
+Create consistent placeholder pages with:
+
+- Appropriate Lucide icon.
+- Feature title.
+- Short explanation.
+- "Coming soon" status.
+- Return to Home action.
+
+Do not build their actual learning functionality.
+
+---
+
+# 11\. FREEMIUM SUBSCRIPTION SYSTEM
+
+Implement a clear free/pro architecture.
+
+## Free tier
+
+- Maximum 3 video loads per day.
+- Full original transcript.
+- Translations visible for the first 5 transcript lines.
+- Remaining translations blurred or locked.
+- Basic transcript customization.
+- Upgrade prompts.
+
+## Pro tier
+
+- Unlimited video loads.
+- Full translations.
+- All customization settings.
+- No watermark.
+- Priority feature access architecture.
+
+### Usage tracking
+
+Implement:
+
+- Usage tracking by day.
+- Daily usage reset.
+- Local development persistence.
+- Server-side usage validation.
+- Appropriate error responses when limits are reached.
+
+Important:
+
+localStorage alone is not secure or authoritative.
+
+Treat server-side usage checks as the source of truth when an authenticated backend is available.
+
+For MVP development, provide a clearly documented mock identity mechanism.
+
+### Upgrade experience
+
+Create:
+
+- PaywallBanner.
+- UpgradeCard.
+- UpgradeModal.
+- PricingPage.
+
+Pricing page must show:
+
+- Free plan.
+- Pro plan.
+- Feature comparison.
+- Clear upgrade CTA.
+
+Do not integrate real payments yet.
+
+Create an architecture that allows Stripe integration later.
+
+---
+
+# 12\. AUTHENTICATION
+
+Implement a lightweight mock authentication system.
+
+Features:
+
+- Email input.
+- Name input.
+- Mock login.
+- User state.
+- Logout.
+- User avatar.
+- Pro status.
+
+Use Zustand for application state.
+
+Persist mock authentication state in localStorage.
+
+Create backend authentication endpoints as placeholders for future JWT-based authentication.
+
+Do not represent mock authentication as production-secure authentication.
+
+---
+
+# 13\. BACKEND ARCHITECTURE
+
+Build a modular Express API.
+
+All endpoints must use:
+
+/api/v1
+
+Response format:
+
+{ "success": true, "data": {}, "error": null }
+
+For errors:
+
+{ "success": false, "data": null, "error": { "code": "VALIDATION\_ERROR", "message": "Invalid request" } }
+
+Implement the following routes.
+
+### Video
+
+POST /api/v1/video/parse
+
+Input: { "url": "[https://www.youtube.com/watch?v=](<https://www.youtube.com/watch?v=>)..." }
+
+Output: { "videoId": "..." }
+
+### Transcript
+
+GET /api/v1/transcript/:videoId
+
+Output: { "lines": \[ { "id": "line-1", "start": 0, "end": 3, "text": "Example sentence", "language": "en" } \] }
+
+### Translation
+
+POST /api/v1/translate
+
+Input: { "text": "Hello", "targetLang": "fr" }
+
+Output: { "translated": "Bonjour" }
+
+### Suggestions
+
+GET /api/v1/suggestions
+
+### User limits
+
+GET /api/v1/user/limits
+
+### Authentication
+
+POST /api/v1/auth/login
+
+### Health
+
+GET /api/v1/health
+
+### Additional backend requirements
+
+- Route/controller/service separation.
+- Zod request validation.
+- Centralized error handling.
+- CORS restrictions.
+- Environment variable validation.
+- Request rate limiting.
+- Structured logging.
+- Consistent response types.
+- Appropriate HTTP status codes.
+
+Never expose API keys to the frontend.
+
+---
+
+# 14\. YOUTUBE TRANSCRIPT PROVIDER ARCHITECTURE
+
+Do not tightly couple the application to one transcript extraction library.
+
+Create a provider abstraction:
+
+TranscriptProvider
+
+Responsibilities:
+
+- Retrieve transcript.
+- Normalize transcript data.
+- Return timestamps.
+- Identify transcript language.
+- Handle unavailable captions.
+- Distinguish manual captions from automatically generated captions when provider metadata allows.
+
+Implement:
+
+1. MockTranscriptProvider.
+2. RealTranscriptProvider interface.
+3. Provider selection through environment configuration.
+
+IMPORTANT TECHNICAL CONSTRAINT:
+
+The YouTube IFrame Player API does not provide arbitrary transcript extraction.
+
+Do not assume that embedding a YouTube video automatically gives access to its captions.
+
+Use a legitimate transcript provider or supported integration.
+
+Respect YouTube platform terms, copyright, privacy, and applicable API restrictions.
+
+If real transcript retrieval is unavailable, return clearly identified mock transcript data and display an appropriate demo indicator.
+
+Do not silently substitute unrelated sample content for a real video's transcript.
+
+---
+
+# 15\. API CLIENT AND ERROR HANDLING
+
+Create:
+
+client/src/lib/api.ts
+
+Implement:
+
+- Base URL configuration.
+- Typed request helpers.
+- Consistent response parsing.
+- Request timeout.
+- Error normalization.
+- Development-friendly error messages.
+
+Handle:
+
+- Invalid URLs.
+- Video unavailable.
+- Transcript unavailable.
+- Unsupported language.
+- Translation failure.
+- Rate limits.
+- Network failures.
+- Unauthorized requests.
+- Server errors.
+
+Display errors using toast notifications and appropriate inline UI states.
+
+Never expose sensitive server information in frontend error messages.
+
+---
+
+# 16\. STATE MANAGEMENT
+
+Use Zustand.
+
+Separate stores by responsibility:
+
+- useAuthStore
+- useVideoStore
+- useTranscriptStore
+- useSettingsStore
+- useSubscriptionStore
+
+Avoid storing duplicated derived state.
+
+For example:
+
+- Active transcript line should be derived from playback time and transcript timestamps.
+- Translation visibility should be controlled through settings or transcript state.
+- Pro access should be derived from subscription state.
+
+Persist only appropriate user preferences and mock identity data.
+
+Avoid persisting large transcript payloads unnecessarily.
+
+---
+
+# 17\. REUSABLE UI COMPONENTS
+
+Create reusable primitives:
+
+- Button
+- Input
+- Card
+- Modal
+- Drawer
+- Toggle
+- Select
+- Slider
+- Tooltip
+- Badge
+- Skeleton
+- Avatar
+- Dropdown
+- EmptyState
+- LoadingSpinner
+
+All interactive components must have:
+
+- Accessible labels.
+- Keyboard support.
+- Focus indicators.
+- Disabled states.
+- Loading states where appropriate.
+- Consistent visual styling.
+
+Do not duplicate button implementations throughout the application.
+
+---
+
+# 18\. PERFORMANCE AND ACCESSIBILITY
+
+Performance:
+
+- Lazy-load route components.
+- Memoize expensive transcript rendering.
+- Avoid unnecessary component re-renders.
+- Debounce expensive settings updates.
+- Cache translations.
+- Use efficient transcript timestamp lookup.
+- Lazy-load nonessential media.
+- Clean up player event listeners.
+- Avoid memory leaks.
+
+Accessibility:
+
+- Semantic HTML.
+- WCAG-conscious contrast.
+- Keyboard navigation.
+- Visible focus indicators.
+- Appropriate ARIA labels.
+- Reduced-motion support.
+- Screen-reader-friendly transcript controls.
+
+Ensure the application works with mouse, keyboard, and touch.
+
+---
+
+# 19\. TESTING AND QUALITY CONTROL
+
+Implement meaningful tests.
+
+At minimum, test:
+
+### Frontend
+
+- YouTube URL parsing.
+- Transcript active-line selection.
+- Translation visibility.
+- Settings persistence.
+- Free-tier translation restrictions.
+- Daily video limit behavior.
+
+### Backend
+
+- URL validation.
+- Video ID extraction.
+- Transcript endpoint.
+- Translation endpoint.
+- Usage limit enforcement.
+- Error middleware.
+
+Before completion, execute:
+
+- TypeScript checks.
+- Frontend production build.
+- Backend production build.
+- Automated tests.
+- API smoke tests.
+
+Resolve errors instead of ignoring them.
+
+Do not disable strict TypeScript checks to make the project compile.
+
+Do not use `any` unless a documented third-party typing limitation makes it unavoidable.
+
+Do not leave broken imports, missing modules, dead routes, or nonfunctional buttons.
+
+---
+
+# 20\. ENVIRONMENT VARIABLES
+
+Provide appropriate `.env.example` files.
+
+Example:
+
+CLIENT\_URL=http://localhost:5173 PORT=4000 NODE\_ENV=development YOUTUBE\_API\_KEY= DEEPL\_API\_KEY= DATABASE\_URL= REDIS\_URL= JWT\_SECRET= TRANSLATION\_PROVIDER=mock TRANSCRIPT\_PROVIDER=mock
+
+Never commit real credentials.
+
+Ensure the application works without external API credentials.
+
+---
+
+# 21\. ROOT DEVELOPMENT SCRIPTS
+
+Configure root-level scripts:
+
+npm run dev npm run build npm run test npm run lint npm run typecheck
+
+The development command must start the frontend and backend concurrently.
+
+Expected local environment:
+
+Frontend: http://localhost:5173 Backend: http://localhost:4000 Health check: http://localhost:4000/api/v1/health
+
+Ensure the Vite proxy or API base URL is configured correctly.
+
+---
+
+# 22\. DOCUMENTATION
+
+Create a comprehensive README.md.
+
+Include:
+
+- Project overview.
+- Technology stack.
+- Folder structure.
+- Installation.
+- Environment configuration.
+- Development commands.
+- Production build.
+- API documentation.
+- Mock provider behavior.
+- How to integrate a real transcript provider.
+- How to integrate a real translation provider.
+- How to add new feature pages.
+- How to replace mock authentication.
+- Known MVP limitations.
+
+---
+
+# 23\. STRICT DEVELOPMENT RULES
+
+1. Never generate the entire application as one oversized component.
+2. Never place backend logic inside frontend components.
+3. Never hardcode API keys.
+4. Never use `any` casually.
+5. Never create fake working buttons.
+6. Never hide errors silently.
+7. Never use arbitrary global CSS overrides.
+8. Never mix competing animation systems on the same element.
+9. Never introduce unnecessary dependencies.
+10. Never implement the actual Speaking, Writing, Shadowing, or Pronunciation features.
+11. Never pretend mock data is real external API data.
+12. Never leave incomplete essential functionality.
+13. Never sacrifice maintainability for visual shortcuts.
+14. Never claim a build or test passed unless it was actually executed.
+
+Use clean code, descriptive names, reusable components, and consistent conventions.
+
+---
+
+# 24\. FINAL ACCEPTANCE CRITERIA
+
+The project is complete only when all of the following are satisfied.
+
+## Product functionality
+
+- [ ]User can enter a YouTube URL.
+- [ ]URL validation works.
+- [ ]Video player loads supported videos.
+- [ ]Mock transcript loads without external credentials.
+- [ ]Transcript lines display correctly.
+- [ ]Active transcript line synchronizes with playback.
+- [ ]Clicking a line seeks the video.
+- [ ]Translations can be toggled.
+- [ ]Per-line translations work.
+- [ ]Free users see only five unlocked translations.
+- [ ]Settings update the transcript immediately.
+- [ ]Settings persist after refresh.
+- [ ]Suggestions load videos.
+- [ ]Upgrade interface works.
+- [ ]Free usage limits are enforced.
+- [ ]Navigation works on desktop and mobile.
+- [ ]Placeholder pages are implemented correctly.
+
+## Backend
+
+- [ ]All specified API routes exist.
+- [ ]Request validation works.
+- [ ]Error handling works.
+- [ ]Mock providers work.
+- [ ]Health check works.
+- [ ]CORS is configured.
+- [ ]Rate limiting is configured.
+- [ ]Environment variables are validated.
+
+## Quality
+
+- [ ]TypeScript checks pass.
+- [ ]Frontend builds successfully.
+- [ ]Backend builds successfully.
+- [ ]Tests pass.
+- [ ]No broken imports.
+- [ ]No major console errors.
+- [ ]No obvious responsive layout problems.
+- [ ]README is complete.
+- [ ]Environment examples are provided.
+
+---
+
+# 25\. FINAL EXECUTION INSTRUCTIONS
+
+Start by inspecting the repository.
+
+Then implement the project incrementally, following the phases above.
+
+Do not stop after creating the folder structure.
+
+Do not stop after generating a beautiful homepage.
+
+Do not return only code snippets or architectural explanations.
+
+Actually create and modify the project files in the working directory.
+
+Run the application, inspect errors, and fix them.
+
+If a third-party service requires credentials, implement a working mock provider and document how to activate the real provider later.
+
+If an external integration is technically impossible or restricted, explain the limitation and provide the closest legitimate working alternative.
+
+At the end, provide a concise implementation report containing:
+
+1. What was implemented.
+2. Main features that work.
+3. Folder structure created.
+4. API endpoints implemented.
+5. Dependencies installed.
+6. Environment variables required.
+7. Commands to run the application.
+8. Tests and builds actually executed, with their results.
+9. Known limitations and integrations still requiring credentials.
+
+**FINAL PRIORITY:**
+
+Build a visually exceptional, genuinely interactive, technically sound SaaS MVP.
+
+The HomePage experience (YouTube video + synchronized transcript + translations + customization) is the heart of LinguaTube.
+
+Give this experience the highest implementation priority.
+
+The application must be usable immediately in mock mode, while maintaining an architecture suitable for future production development.
+
+## Important improvements I added
+
+There are a few technical details in your original prompt that are particularly important to get right.
+
+| Area | Why the improvement matters |
+| --- | --- |
+| Transcript provider abstraction | YouTube embedding does not automatically provide transcript extraction. |
+| Timestamp synchronization | Prevents transcript highlighting from becoming inefficient or inaccurate. |
+| Server-side usage limits | Prevents users from bypassing daily limits by editing localStorage. |
+| Mock provider architecture | Lets the agent build a working application without paid API credentials. |
+| Shared TypeScript contracts | Prevents frontend/backend data mismatches. |
+| Acceptance criteria | Gives the agent measurable completion requirements. |
+| Testing instructions | Prevents the agent from simply generating files and claiming success. |
+| Translation caching | Reduces unnecessary API calls and costs. |
+
+## My recommendation for using this prompt
+
+If you're using an autonomous coding agent, don't ask it to generate everything in one shot without checking its work.
+
+Use this execution sequence:
+
+1. Architecture and foundation
+   Ask the agent to inspect your project, establish the architecture, and configure the frontend and backend.
+2. Core learning experience
+   Focus on the video player, transcript, synchronization, translations, and customization.
+3. SaaS functionality
+   Implement subscriptions, usage limits, authentication mock, pricing, and settings.
+4. Backend integration
+   Connect all frontend features to the API and implement mock providers.
+5. Testing and refinement
+   Ask the agent to run the application, test every interaction, fix errors, and polish the UI.
+
+One final suggestion: Make the transcript experience your biggest competitive advantage. A particularly valuable future feature would be interactive word-level learning: users click any word in a transcript sentence to see its definition, pronunciation, translation, and example usage. This could eventually make LinguaTube much more than a YouTube transcript viewer.
