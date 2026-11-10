@@ -11,9 +11,7 @@ import toast from 'react-hot-toast'
 import { Button, Input, Modal } from '../../components/ui'
 import { cn } from '../../lib/cn'
 import { useAuthStore } from '../../store/authStore'
-import { useUiStore } from '../../store/uiStore'
-
-type AuthMode = 'login' | 'register'
+import { useUiStore, type AuthMode } from '../../store/uiStore'
 
 const GoogleLogo = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4.5 w-4.5">
@@ -44,12 +42,13 @@ const XLogo = () => (
 
 export const AuthModal = () => {
   const isOpen = useUiStore((state) => state.isAuthOpen)
+  const mode = useUiStore((state) => state.authMode)
+  const openAuth = useUiStore((state) => state.openAuth)
   const close = useUiStore((state) => state.closeAuth)
   const login = useAuthStore((state) => state.login)
   const register = useAuthStore((state) => state.register)
   const socialLogin = useAuthStore((state) => state.socialLogin)
   const isAuthenticating = useAuthStore((state) => state.isAuthenticating)
-  const [mode, setMode] = useState<AuthMode>('login')
   const [username, setUsername] = useState('admin')
   const [password, setPassword] = useState('admin')
   const [name, setName] = useState('')
@@ -58,10 +57,19 @@ export const AuthModal = () => {
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const finishAuth = (name: string, message: string) => {
-    toast.success(`${message}, ${name}!`)
+  const handleClose = () => {
     setError(null)
     close()
+  }
+
+  const visibleUsername =
+    mode === 'register' && username === 'admin' ? '' : username
+  const visiblePassword =
+    mode === 'register' && password === 'admin' ? '' : password
+
+  const finishAuth = (name: string, message: string) => {
+    toast.success(`${message}, ${name}!`)
+    handleClose()
   }
 
   const handleSubmit = async (event: FormEvent) => {
@@ -83,8 +91,8 @@ export const AuthModal = () => {
       const user = await register({
         name,
         email,
-        username,
-        password,
+        username: visibleUsername,
+        password: visiblePassword,
         confirmPassword,
       })
       finishAuth(user.name, 'Account created')
@@ -121,7 +129,7 @@ export const AuthModal = () => {
   return (
     <Modal
       open={isOpen}
-      onClose={close}
+      onClose={handleClose}
       title={mode === 'login' ? 'Welcome back' : 'Create your account'}
       description={
         mode === 'login'
@@ -137,12 +145,8 @@ export const AuthModal = () => {
               key={option}
               type="button"
               onClick={() => {
-                setMode(option)
+                openAuth(option)
                 setError(null)
-                if (option === 'register' && username === 'admin') {
-                  setUsername('')
-                  setPassword('')
-                }
               }}
               className={cn(
                 'h-9 rounded-lg text-xs font-semibold text-muted transition',
@@ -194,7 +198,7 @@ export const AuthModal = () => {
             </span>
             <Input
               icon={<UserRound className="h-4 w-4" />}
-              value={username}
+              value={visibleUsername}
               onChange={(event) => setUsername(event.target.value)}
               placeholder="Choose a username"
               autoComplete="username"
@@ -216,7 +220,7 @@ export const AuthModal = () => {
               <Input
                 icon={<KeyRound className="h-4 w-4" />}
                 type="password"
-                value={password}
+                value={visiblePassword}
                 onChange={(event) => setPassword(event.target.value)}
                 autoComplete={
                   mode === 'login' ? 'current-password' : 'new-password'

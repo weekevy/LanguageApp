@@ -26,13 +26,25 @@ export const useVideoStore = create<VideoState>((set) => ({
   loadingVideoId: null,
   error: null,
   setCurrentVideo: (currentVideo) =>
-    set({ currentVideo, currentTime: 0, duration: currentVideo?.duration ?? 0 }),
+    set({
+      currentVideo,
+      currentTime: 0,
+      duration: currentVideo?.duration ?? 0,
+    }),
   setPlayback: (currentTime, duration) =>
-    set((state) => ({
-      currentTime,
-      duration: duration ?? state.duration,
-    })),
-  setIsPlaying: (isPlaying) => set({ isPlaying }),
+    set((state) => {
+      const nextDuration = duration ?? state.duration
+      if (
+        Math.abs(currentTime - state.currentTime) < 0.025 &&
+        Math.abs(nextDuration - state.duration) < 0.025
+      ) {
+        return state
+      }
+
+      return { currentTime, duration: nextDuration }
+    }),
+  setIsPlaying: (isPlaying) =>
+    set((state) => (state.isPlaying === isPlaying ? state : { isPlaying })),
   startLoading: (loadingVideoId) =>
     set({ isLoading: true, loadingVideoId, error: null }),
   finishLoading: () => set({ isLoading: false, loadingVideoId: null }),

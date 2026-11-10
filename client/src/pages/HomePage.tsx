@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { RefreshCw, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { HowItWorks } from '../components/home/HowItWorks'
@@ -18,8 +17,8 @@ import {
 import { useVideoStore } from '../store/videoStore'
 
 const LessonLoadingState = () => (
-  <div className="mt-5 grid items-start gap-3 xl:grid-cols-[minmax(440px,0.9fr)_minmax(0,1.1fr)]">
-    <Card className="h-150 p-4">
+  <div className="mt-3 grid items-start gap-3 sm:mt-5 xl:grid-cols-[minmax(440px,0.9fr)_minmax(0,1.1fr)]">
+    <Card className="order-2 h-88 p-3 sm:h-125 sm:p-4 xl:order-1 xl:h-150">
       <div className="flex items-center gap-3 border-b border-border pb-4">
         <Skeleton className="h-9 w-9 rounded-xl" />
         <div className="flex-1">
@@ -27,15 +26,15 @@ const LessonLoadingState = () => (
           <Skeleton className="mt-2 h-3 w-24" />
         </div>
       </div>
-      <div className="mt-4 space-y-3">
-        {Array.from({ length: 5 }, (_, index) => (
-          <Skeleton key={index} className="h-20 w-full rounded-xl" />
+      <div className="mt-3 space-y-2.5 sm:mt-4 sm:space-y-3">
+        {Array.from({ length: 4 }, (_, index) => (
+          <Skeleton key={index} className="h-14 w-full rounded-xl sm:h-20" />
         ))}
       </div>
     </Card>
-    <Card className="overflow-hidden">
+    <Card className="order-1 overflow-hidden xl:order-2">
       <Skeleton className="aspect-video w-full rounded-none" />
-      <div className="flex items-center gap-3 p-5">
+      <div className="hidden items-center gap-3 p-5 sm:flex">
         <Skeleton className="h-10 w-10 rounded-xl" />
         <Skeleton className="h-2 flex-1 rounded-full" />
         <Skeleton className="h-10 w-24 rounded-xl" />
@@ -78,7 +77,7 @@ export default function HomePage() {
   const isCuratedDemo = currentVideo?.videoId === DEFAULT_DEMO_VIDEO_ID
 
   return (
-    <div className="w-full px-2 py-5 sm:px-3 sm:py-7 lg:px-3 lg:py-8 xl:px-4">
+    <div className="w-full px-2 pb-5 pt-1.5 sm:px-3 sm:py-5 lg:px-3 lg:py-6 xl:px-4">
       {isOpeningDemo && <LessonLoadingState />}
 
       {!currentVideo && !isLoading && error && (
@@ -100,11 +99,8 @@ export default function HomePage() {
       )}
 
       {currentVideo && (
-        <motion.section
+        <section
           className="grid items-start gap-3 xl:grid-cols-[minmax(440px,0.9fr)_minmax(0,1.1fr)]"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
           aria-label="Interactive video lesson"
         >
           <div className="order-2 min-h-0 xl:order-1">
@@ -116,11 +112,11 @@ export default function HomePage() {
           <div ref={videoCardRef} className="order-1 xl:order-2">
             <VideoPlayer ref={playerRef} />
           </div>
-        </motion.section>
+        </section>
       )}
 
       {currentVideo && (
-        <div className="mt-5">
+        <div className="mt-3 sm:mt-5">
           <PaywallBanner />
         </div>
       )}
@@ -128,7 +124,7 @@ export default function HomePage() {
       {isCuratedDemo && <HowItWorks />}
       {isCuratedDemo && <LanguageStrip />}
 
-      <div className="mt-16">
+      <div className="mt-9 sm:mt-16">
         <div className="mb-2 flex items-center gap-2 text-xs text-muted">
           <Sparkles className="h-3.5 w-3.5 text-secondary" /> Choose another
           lesson whenever you are ready.

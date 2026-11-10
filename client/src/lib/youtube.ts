@@ -4,6 +4,8 @@ const supportedHosts = new Set([
   'www.youtube.com',
   'm.youtube.com',
   'music.youtube.com',
+  'youtube-nocookie.com',
+  'www.youtube-nocookie.com',
   'youtu.be',
   'www.youtu.be',
 ])
@@ -27,7 +29,7 @@ export const parseYouTubeUrl = (input: string): string | null => {
     candidate = segments[0] ?? null
   } else if (url.pathname === '/watch') {
     candidate = url.searchParams.get('v')
-  } else if (['embed', 'shorts'].includes(segments[0] ?? '')) {
+  } else if (['embed', 'shorts', 'live', 'v'].includes(segments[0] ?? '')) {
     candidate = segments[1] ?? null
   }
 

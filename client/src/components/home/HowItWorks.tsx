@@ -11,7 +11,8 @@ const steps = [
     number: '02',
     icon: PlaySquare,
     title: 'Follow the language',
-    description: 'Watch with a synchronized transcript and useful translations.',
+    description:
+      'Watch with a synchronized transcript and useful translations.',
   },
   {
     number: '03',
@@ -22,27 +23,34 @@ const steps = [
 ]
 
 export const HowItWorks = () => (
-  <section className="mt-14 overflow-hidden rounded-3xl border border-border bg-surface px-5 py-8 sm:px-8 lg:px-10">
-    <div className="grid gap-8 lg:grid-cols-[0.65fr_1.35fr] lg:items-center">
+  <section className="deferred-section mt-8 overflow-hidden rounded-2xl border border-border bg-surface px-4 py-5 sm:mt-14 sm:rounded-3xl sm:px-8 sm:py-8 lg:px-10">
+    <div className="grid gap-5 sm:gap-8 lg:grid-cols-[0.65fr_1.35fr] lg:items-center">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-secondary">
           A calmer workflow
         </p>
-        <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <h2 className="mt-2 text-xl font-bold tracking-tight text-foreground sm:mt-3 sm:text-3xl">
           From watching to understanding in three steps.
         </h2>
       </div>
-      <ol className="grid gap-3 sm:grid-cols-3">
+      <ol className="grid gap-2.5 sm:grid-cols-3 sm:gap-3">
         {steps.map(({ number, icon: Icon, title, description }) => (
-          <li key={number} className="relative rounded-2xl border border-border bg-elevated/60 p-4">
-            <span className="absolute right-4 top-3 font-mono text-[10px] text-muted/70">
+          <li
+            key={number}
+            className="relative rounded-xl border border-border bg-elevated/60 p-3 sm:rounded-2xl sm:p-4"
+          >
+            <span className="absolute right-3 top-3 font-mono text-[10px] text-muted/70 sm:right-4">
               {number}
             </span>
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/10 text-secondary">
               <Icon className="h-4 w-4" />
             </span>
-            <h3 className="mt-4 text-sm font-semibold text-foreground">{title}</h3>
-            <p className="mt-2 text-xs leading-5 text-muted">{description}</p>
+            <h3 className="mt-3 text-sm font-semibold text-foreground sm:mt-4">
+              {title}
+            </h3>
+            <p className="mt-1.5 text-xs leading-5 text-muted sm:mt-2">
+              {description}
+            </p>
           </li>
         ))}
       </ol>

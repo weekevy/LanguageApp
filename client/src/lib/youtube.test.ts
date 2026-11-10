@@ -7,6 +7,8 @@ describe('parseYouTubeUrl', () => {
     ['https://youtu.be/M7lc1UVf-VE?t=10', 'M7lc1UVf-VE'],
     ['https://www.youtube.com/embed/M7lc1UVf-VE', 'M7lc1UVf-VE'],
     ['https://youtube.com/shorts/M7lc1UVf-VE', 'M7lc1UVf-VE'],
+    ['https://youtube.com/live/M7lc1UVf-VE?feature=share', 'M7lc1UVf-VE'],
+    ['https://www.youtube-nocookie.com/embed/M7lc1UVf-VE', 'M7lc1UVf-VE'],
   ])('extracts an ID from %s', (url, expected) => {
     expect(parseYouTubeUrl(url)).toBe(expected)
   })

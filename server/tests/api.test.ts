@@ -35,10 +35,10 @@ describe('LinguaTube API', () => {
     const response = await request(app)
       .post('/api/v1/video/parse')
       .set('x-device-id', 'api-video-test')
-      .send({ url: 'https://youtu.be/M7lc1UVf-VE' })
+      .send({ url: 'https://youtu.be/eIho2S0ZahI' })
       .expect(200)
 
-    expect(response.body.data.videoId).toBe('M7lc1UVf-VE')
+    expect(response.body.data.videoId).toBe('eIho2S0ZahI')
     expect(response.body.data.limits.used).toBe(1)
   })
 

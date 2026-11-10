@@ -13,7 +13,7 @@ const envSchema = z.object({
   LOG_LEVEL: z
     .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
     .default('warn'),
-  TRANSCRIPT_PROVIDER: z.enum(['mock', 'real']).default('mock'),
+  TRANSCRIPT_PROVIDER: z.enum(['mock', 'real']).default('real'),
   TRANSLATION_PROVIDER: z.enum(['mock', 'real']).default('mock'),
   FREE_DAILY_VIDEO_LIMIT: z.coerce.number().int().positive().default(3),
   YOUTUBE_API_KEY: z.preprocess(emptyToUndefined, z.string().optional()),

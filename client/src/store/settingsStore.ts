@@ -3,20 +3,29 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 export type TranscriptFont = 'sans' | 'serif' | 'mono'
-export type AppTheme = 'dark' | 'light' | 'midnight' | 'aurora' | 'rose'
-export type TranscriptTheme =
-  'dark' | 'light' | 'sepia' | 'contrast' | 'ocean' | 'lavender' | 'forest'
+export type AppLanguage = 'system' | LanguageCode
+export type AppTheme =
+  | 'dark'
+  | 'light'
+  | 'midnight'
+  | 'aurora'
+  | 'rose'
+  | 'ocean'
+  | 'sunset'
+  | 'royal'
+  | 'mocha'
 export type TextAlignment = 'left' | 'center' | 'right'
 
 export interface TranscriptSettings {
   appTheme: AppTheme
+  appLanguage: AppLanguage
   fontFamily: TranscriptFont
   fontSize: number
   fontWeight: number
   lineHeight: number
   textAlignment: TextAlignment
-  transcriptTheme: TranscriptTheme
   backgroundOpacity: number
+  captionOpacity: number
   showBorder: boolean
   activeHighlight: 'violet' | 'cyan' | 'emerald'
   showOriginal: boolean
@@ -32,13 +41,14 @@ export interface TranscriptSettings {
 
 export const defaultTranscriptSettings: TranscriptSettings = {
   appTheme: 'dark',
+  appLanguage: 'system',
   fontFamily: 'sans',
-  fontSize: 17,
+  fontSize: 19,
   fontWeight: 450,
   lineHeight: 1.7,
   textAlignment: 'left',
-  transcriptTheme: 'dark',
   backgroundOpacity: 92,
+  captionOpacity: 100,
   showBorder: true,
   activeHighlight: 'violet',
   showOriginal: true,
@@ -73,18 +83,24 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: 'linguatube-transcript-settings',
-      version: 2,
+      version: 5,
       migrate: (persistedState, version) => {
         const persisted = persistedState as Partial<SettingsState> & {
           settings?: Partial<TranscriptSettings>
         }
-        if (version < 2 && persisted.settings) {
+        if (version < 5 && persisted.settings) {
           return {
             ...persisted,
             settings: {
               ...defaultTranscriptSettings,
               ...persisted.settings,
-              highlightActiveWords: true,
+              ...(version < 2 ? { highlightActiveWords: true } : {}),
+              ...(version < 4 ? { captionOpacity: 100 } : {}),
+              ...(version < 5 ? { appLanguage: 'system' as const } : {}),
+              ...(persisted.settings.fontSize === undefined ||
+              persisted.settings.fontSize === 17
+                ? { fontSize: 19 }
+                : {}),
             },
           } as SettingsState
         }

@@ -6,7 +6,6 @@ import {
   ScanText,
   Sparkles,
 } from 'lucide-react'
-import { motion } from 'framer-motion'
 import { Badge, Card } from '../ui'
 
 const transcriptLines = [
@@ -19,7 +18,8 @@ export const LandingBento = () => (
   <section className="mt-14" aria-labelledby="learning-experience-heading">
     <div className="mx-auto max-w-2xl text-center">
       <Badge variant="outline">
-        <Sparkles className="mr-1.5 h-3 w-3 text-secondary" /> Built for focused learning
+        <Sparkles className="mr-1.5 h-3 w-3 text-secondary" /> Built for focused
+        learning
       </Badge>
       <h2
         id="learning-experience-heading"
@@ -33,12 +33,7 @@ export const LandingBento = () => (
     </div>
 
     <div className="mt-9 grid gap-4 lg:grid-cols-12">
-      <motion.div
-        className="lg:col-span-7"
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-      >
+      <div className="css-rise-in lg:col-span-7">
         <Card className="relative h-full min-h-105 overflow-hidden p-6 sm:p-8">
           <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
           <div className="relative flex items-start justify-between gap-5">
@@ -50,7 +45,8 @@ export const LandingBento = () => (
                 A transcript that follows along
               </h3>
               <p className="mt-2 max-w-lg text-sm leading-6 text-muted">
-                The active sentence stays visible while the video plays. Select any line to return to that exact moment.
+                The active sentence stays visible while the video plays. Select
+                any line to return to that exact moment.
               </p>
             </div>
             <Badge variant="primary">Synchronized</Badge>
@@ -79,7 +75,9 @@ export const LandingBento = () => (
                     0:{String(6 + index * 5).padStart(2, '0')}
                   </span>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{line}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {line}
+                    </p>
                     {index === 1 && (
                       <p className="mt-1.5 text-xs text-secondary">
                         Suivez chaque phrase pendant qu&apos;elle est prononcée.
@@ -90,50 +88,49 @@ export const LandingBento = () => (
               ))}
             </div>
             <div className="absolute -bottom-4 right-5 inline-flex items-center gap-2 rounded-xl border border-border bg-elevated px-3 py-2 text-[10px] font-semibold text-foreground shadow-panel">
-              <MousePointer2 className="h-3.5 w-3.5 text-accent" /> Click to seek
+              <MousePointer2 className="h-3.5 w-3.5 text-accent" /> Click to
+              seek
             </div>
           </div>
         </Card>
-      </motion.div>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ delay: 0.08 }}
-        >
+        <div className="css-rise-in css-rise-in-delay-1">
           <Card className="relative h-full overflow-hidden p-6">
             <div className="absolute -bottom-20 -right-14 h-44 w-44 rounded-full bg-accent/12 blur-3xl" />
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent/10 text-accent">
               <Languages className="h-4.5 w-4.5" />
             </span>
-            <h3 className="mt-4 text-lg font-bold text-foreground">Translate only when needed</h3>
+            <h3 className="mt-4 text-lg font-bold text-foreground">
+              Translate only when needed
+            </h3>
             <p className="mt-2 text-sm leading-6 text-muted">
-              Reveal one line or translate the session in bulk. Your first guess always comes first.
+              Reveal one line or translate the session in bulk. Your first guess
+              always comes first.
             </p>
             <div className="relative mt-5 space-y-2 rounded-xl border border-border bg-elevated/70 p-4">
-              <p className="text-sm font-medium text-foreground">Consistency changes everything.</p>
+              <p className="text-sm font-medium text-foreground">
+                Consistency changes everything.
+              </p>
               <div className="h-px bg-border" />
               <p className="text-sm text-accent">La régularité change tout.</p>
             </div>
           </Card>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ delay: 0.14 }}
-        >
+        <div className="css-rise-in css-rise-in-delay-2">
           <Card className="relative h-full overflow-hidden p-6">
             <div className="absolute -left-16 -top-20 h-44 w-44 rounded-full bg-secondary/12 blur-3xl" />
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-secondary/12 text-secondary">
               <Palette className="h-4.5 w-4.5" />
             </span>
-            <h3 className="mt-4 text-lg font-bold text-foreground">Make reading feel natural</h3>
+            <h3 className="mt-4 text-lg font-bold text-foreground">
+              Make reading feel natural
+            </h3>
             <p className="mt-2 text-sm leading-6 text-muted">
-              Adjust type, spacing, themes, visibility, and scrolling without leaving the transcript.
+              Adjust type, spacing, themes, visibility, and scrolling without
+              leaving the transcript.
             </p>
             <div className="mt-5 flex gap-2">
               {['Aa', 'Serif', 'Mono'].map((label, index) => (
@@ -150,7 +147,7 @@ export const LandingBento = () => (
               ))}
             </div>
           </Card>
-        </motion.div>
+        </div>
       </div>
     </div>
   </section>

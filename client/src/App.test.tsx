@@ -89,7 +89,13 @@ describe('App', () => {
         await act(async () => Promise.resolve())
         expect(container.textContent).toContain('Learning studio')
         expect(container.textContent).toContain('Load')
-        expect(container.textContent).toContain('Me at the zoo')
+        expect(container.textContent).toContain(
+          'All right, so here we are in front of the elephants.',
+        )
+        expect(container.textContent).not.toContain('Translate')
+        expect(container.textContent).not.toContain('Interactive transcript')
+        expect(container.textContent).not.toContain('Following the video')
+        expect(container.textContent).not.toContain('Me at the zoo')
       },
       { timeout: 2_000 },
     )

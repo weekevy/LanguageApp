@@ -57,12 +57,10 @@ export const configureApiIdentity = (user: MockUser | null) => {
 const request = async <T>(
   path: string,
   options: RequestInit = {},
+  timeoutMs = REQUEST_TIMEOUT_MS,
 ): Promise<T> => {
   const controller = new AbortController()
-  const timeout = window.setTimeout(
-    () => controller.abort(),
-    REQUEST_TIMEOUT_MS,
-  )
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs)
   const identityHeaders: Record<string, string> = apiIdentity
     ? {
         'x-mock-user-id': apiIdentity.id,
@@ -119,7 +117,7 @@ export const api = {
       body: JSON.stringify({ url }),
     }),
   transcript: (videoId: string) =>
-    request<TranscriptPayload>(`/transcript/${videoId}`),
+    request<TranscriptPayload>(`/transcript/${videoId}`, {}, 25_000),
   translate: (
     text: string,
     targetLang: LanguageCode,

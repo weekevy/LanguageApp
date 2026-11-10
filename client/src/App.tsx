@@ -15,7 +15,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 const SectionFallback = () => (
   <div className="grid min-h-[calc(100vh-4.25rem)] place-items-center px-4">
-    <div className="rounded-2xl border border-border bg-surface/75 px-6 py-5 text-center text-muted shadow-[var(--app-shadow-soft)] backdrop-blur">
+    <div className="rounded-2xl border border-border bg-surface px-6 py-5 text-center text-muted shadow-[var(--app-shadow-soft)]">
       <LoadingSpinner className="mx-auto text-secondary" />
       <p className="mt-3 text-xs">Opening this section…</p>
     </div>

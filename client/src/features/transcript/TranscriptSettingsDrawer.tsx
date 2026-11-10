@@ -6,7 +6,6 @@ import { cn } from '../../lib/cn'
 import {
   useSettingsStore,
   type TranscriptFont,
-  type TranscriptTheme,
 } from '../../store/settingsStore'
 
 interface TranscriptSettingsDrawerProps {
@@ -21,8 +20,8 @@ const Section = ({
   title: string
   children: React.ReactNode
 }) => (
-  <section className="border-b border-border py-5 first:pt-0 last:border-0">
-    <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.16em] text-muted">
+  <section className="border-b border-border py-4 first:pt-0 last:border-0 sm:py-5">
+    <h3 className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-muted sm:mb-4 sm:text-[11px]">
       {title}
     </h3>
     {children}
@@ -55,7 +54,7 @@ export const TranscriptSettingsDrawer = ({
             </button>
           ))}
         </div>
-        <label className="mt-5 block">
+        <label className="mt-4 block sm:mt-5">
           <span className="mb-2 flex justify-between text-xs text-muted">
             Font size{' '}
             <strong className="text-foreground">{settings.fontSize}px</strong>
@@ -67,7 +66,7 @@ export const TranscriptSettingsDrawer = ({
             onChange={(event) => update('fontSize', Number(event.target.value))}
           />
         </label>
-        <label className="mt-5 block">
+        <label className="mt-4 block sm:mt-5">
           <span className="mb-2 flex justify-between text-xs text-muted">
             Font weight{' '}
             <strong className="text-foreground">{settings.fontWeight}</strong>
@@ -82,7 +81,7 @@ export const TranscriptSettingsDrawer = ({
             }
           />
         </label>
-        <label className="mt-5 block">
+        <label className="mt-4 block sm:mt-5">
           <span className="mb-2 flex justify-between text-xs text-muted">
             Line height{' '}
             <strong className="text-foreground">
@@ -99,7 +98,7 @@ export const TranscriptSettingsDrawer = ({
             }
           />
         </label>
-        <div className="mt-5">
+        <div className="mt-4 sm:mt-5">
           <span className="mb-2 block text-xs text-muted">Text alignment</span>
           <Select
             value={settings.textAlignment}
@@ -119,35 +118,10 @@ export const TranscriptSettingsDrawer = ({
       </Section>
 
       <Section title="Appearance">
-        <div className="grid grid-cols-2 gap-2">
-          {(
-            [
-              'dark',
-              'light',
-              'sepia',
-              'contrast',
-              'ocean',
-              'lavender',
-              'forest',
-            ] as TranscriptTheme[]
-          ).map((theme) => {
-            return (
-              <button
-                key={theme}
-                type="button"
-                onClick={() => update('transcriptTheme', theme)}
-                className={cn(
-                  'relative rounded-lg border border-border bg-elevated px-3 py-3 text-left text-xs capitalize text-muted transition hover:text-foreground',
-                  settings.transcriptTheme === theme &&
-                    'border-primary/50 bg-primary/10 text-secondary',
-                )}
-              >
-                {theme}
-              </button>
-            )
-          })}
-        </div>
-        <label className="mt-5 block">
+        <p className="mb-4 rounded-xl bg-primary/8 px-3 py-2.5 text-[11px] leading-4 text-muted">
+          The transcript now follows your selected app theme automatically.
+        </p>
+        <label className="block">
           <span className="mb-2 flex justify-between text-xs text-muted">
             Background opacity
             <strong className="text-foreground">
@@ -193,8 +167,26 @@ export const TranscriptSettingsDrawer = ({
         <Toggle
           checked={settings.showOriginal}
           onCheckedChange={(value) => update('showOriginal', value)}
-          label="Original text"
+          label="Captions"
         />
+        <label className="mt-3 block">
+          <span className="mb-2 flex justify-between text-xs text-muted">
+            Caption opacity
+            <strong className="text-foreground">
+              {settings.captionOpacity}%
+            </strong>
+          </span>
+          <Slider
+            min={0}
+            max={100}
+            step={5}
+            value={settings.captionOpacity}
+            disabled={!settings.showOriginal}
+            onChange={(event) =>
+              update('captionOpacity', Number(event.target.value))
+            }
+          />
+        </label>
         <Toggle
           checked={settings.showTranslations}
           onCheckedChange={(value) => update('showTranslations', value)}
@@ -227,11 +219,6 @@ export const TranscriptSettingsDrawer = ({
       </Section>
 
       <Section title="Behavior">
-        <Toggle
-          checked={settings.autoScroll}
-          onCheckedChange={(value) => update('autoScroll', value)}
-          label="Auto-scroll active line"
-        />
         <Toggle
           checked={settings.keepActiveCentered}
           onCheckedChange={(value) => update('keepActiveCentered', value)}

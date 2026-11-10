@@ -50,7 +50,7 @@ export const Sidebar = () => {
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-border bg-surface/92 py-4 shadow-[8px_0_40px_rgba(0,0,0,0.04)] backdrop-blur-xl transition-[width,padding] duration-300 ease-out lg:flex',
+        'fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-border bg-surface py-4 shadow-[8px_0_24px_rgba(0,0,0,0.035)] lg:flex',
         collapsed ? 'w-20 px-3' : 'w-62 px-4',
       )}
     >

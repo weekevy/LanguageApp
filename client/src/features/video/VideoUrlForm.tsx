@@ -9,10 +9,10 @@ import { useVideoLoader } from './useVideoLoader'
 
 const exampleUrls = [
   {
-    label: 'Everyday English',
-    url: 'https://www.youtube.com/watch?v=M7lc1UVf-VE',
+    label: 'Speak clearly',
+    url: 'https://www.youtube.com/watch?v=eIho2S0ZahI',
   },
-  { label: 'Short talk', url: 'https://youtu.be/Ks-_Mh1QhMc' },
+  { label: 'Learn languages', url: 'https://youtu.be/o_XVt5rdpFY' },
 ]
 
 export const VideoUrlForm = ({
@@ -56,7 +56,7 @@ export const VideoUrlForm = ({
             ? 'flex min-w-0 items-center gap-1.5 rounded-xl border border-border bg-surface/75 p-1 shadow-sm transition focus-within:border-primary/45 focus-within:ring-2 focus-within:ring-primary/10'
             : compact
               ? 'flex flex-col gap-2 rounded-2xl border border-border-strong bg-surface/92 p-2 shadow-[var(--app-shadow-soft)] transition focus-within:border-primary/45 focus-within:ring-4 focus-within:ring-primary/8 sm:flex-row'
-              : 'group flex flex-col gap-2 rounded-2xl border border-border-strong bg-surface/90 p-2 shadow-[0_20px_70px_rgba(0,0,0,0.22)] backdrop-blur-xl transition focus-within:border-primary/45 focus-within:ring-4 focus-within:ring-primary/8 sm:flex-row',
+              : 'group flex flex-col gap-2 rounded-2xl border border-border-strong bg-surface p-2 shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition focus-within:border-primary/45 focus-within:ring-4 focus-within:ring-primary/8 sm:flex-row',
           navbar && error && 'border-danger/60',
         )}
       >

@@ -14,8 +14,8 @@ const SuggestionCard = ({ video }: { video: VideoMetadata }) => {
   const loadingVideoId = useVideoStore((state) => state.loadingVideoId)
 
   return (
-    <Card className="group overflow-hidden shadow-none transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-panel">
-      <div className="relative aspect-video overflow-hidden bg-elevated">
+    <Card className="group grid grid-cols-[7.25rem_minmax(0,1fr)] overflow-hidden shadow-none transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-panel sm:block">
+      <div className="relative min-h-34 overflow-hidden bg-elevated sm:aspect-video sm:min-h-0">
         {!imageFailed ? (
           <img
             src={video.thumbnailUrl}
@@ -36,16 +36,16 @@ const SuggestionCard = ({ video }: { video: VideoMetadata }) => {
         <button
           type="button"
           aria-label={`Load ${video.title}`}
-          className="absolute inset-0 grid place-items-center opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100"
+          className="absolute inset-0 grid place-items-center opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
           onClick={() => void loadVideo(toYouTubeUrl(video.videoId))}
         >
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-white text-primary shadow-xl">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-white text-primary shadow-xl sm:h-11 sm:w-11">
             <Play className="h-4.5 w-4.5 fill-current" />
           </span>
         </button>
       </div>
-      <div className="p-4">
-        <div className="mb-2 flex items-center gap-2">
+      <div className="min-w-0 p-3 sm:p-4">
+        <div className="mb-1.5 flex flex-wrap items-center gap-1 sm:mb-2 sm:gap-2">
           <Badge variant="outline">{video.language.toUpperCase()}</Badge>
           <Badge
             variant={video.difficulty === 'Beginner' ? 'success' : 'default'}
@@ -56,12 +56,14 @@ const SuggestionCard = ({ video }: { video: VideoMetadata }) => {
         <h3 className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-foreground">
           {video.title}
         </h3>
-        <p className="mt-2 text-xs text-muted">{video.channel}</p>
+        <p className="mt-1.5 truncate text-xs text-muted sm:mt-2">
+          {video.channel}
+        </p>
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          className="mt-3 w-full justify-between"
+          className="mt-2 w-full justify-between sm:mt-3"
           isLoading={loadingVideoId === video.videoId}
           onClick={() => void loadVideo(toYouTubeUrl(video.videoId))}
         >
@@ -103,17 +105,22 @@ export const VideoSuggestions = () => {
   }, [])
 
   return (
-    <section aria-labelledby="suggestions-heading">
-      <div className="mb-5 flex items-end justify-between gap-4">
+    <section className="deferred-section" aria-labelledby="suggestions-heading">
+      <div className="mb-3 flex items-end justify-between gap-4 sm:mb-5">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-secondary">
             Curated for practice
           </p>
-          <h2 id="suggestions-heading" className="mt-2 text-xl font-bold text-foreground">
+          <h2
+            id="suggestions-heading"
+            className="mt-2 text-xl font-bold text-foreground"
+          >
             Keep exploring
           </h2>
         </div>
-        <span className="hidden text-xs text-muted sm:block">Fresh demo sessions</span>
+        <span className="hidden text-xs text-muted sm:block">
+          Real caption-ready videos
+        </span>
       </div>
 
       {error && (
@@ -122,19 +129,24 @@ export const VideoSuggestions = () => {
         </p>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         {isLoading
           ? Array.from({ length: 4 }, (_, index) => (
-              <Card key={index} className="overflow-hidden p-0 shadow-none">
-                <Skeleton className="aspect-video rounded-none" />
-                <div className="space-y-3 p-4">
+              <Card
+                key={index}
+                className="grid grid-cols-[7.25rem_minmax(0,1fr)] overflow-hidden p-0 shadow-none sm:block"
+              >
+                <Skeleton className="min-h-34 rounded-none sm:aspect-video sm:min-h-0" />
+                <div className="space-y-2 p-3 sm:space-y-3 sm:p-4">
                   <Skeleton className="h-4 w-1/3" />
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-3 w-2/3" />
                 </div>
               </Card>
             ))
-          : videos.map((video) => <SuggestionCard key={video.videoId} video={video} />)}
+          : videos.map((video) => (
+              <SuggestionCard key={video.videoId} video={video} />
+            ))}
       </div>
     </section>
   )

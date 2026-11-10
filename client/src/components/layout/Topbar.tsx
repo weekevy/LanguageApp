@@ -14,7 +14,6 @@ import { useSettingsStore } from '../../store/settingsStore'
 import { useSubscriptionStore } from '../../store/subscriptionStore'
 import { useUiStore } from '../../store/uiStore'
 import { Avatar, Badge, Button, Dropdown, Tooltip } from '../ui'
-import { Logo } from '../common/Logo'
 import { VideoUrlForm } from '../../features/video/VideoUrlForm'
 
 export const Topbar = () => {
@@ -41,23 +40,16 @@ export const Topbar = () => {
     }[location.pathname] ?? 'LinguaTube'
 
   return (
-    <header className="sticky top-0 z-30 flex h-17 items-center justify-between gap-3 border-b border-border bg-background/86 px-4 backdrop-blur-xl sm:px-6 lg:px-5 xl:px-6">
+    <header className="app-topbar sticky top-0 z-30 flex h-15 items-center justify-between gap-3 bg-background px-3 sm:px-6 lg:h-17 lg:border-b lg:border-border/60 lg:px-5 xl:px-6">
       <div className="flex items-center gap-3 lg:hidden">
-        <Button
+        <button
           type="button"
-          variant="ghost"
-          size="icon"
+          className="hamburger-trigger grid h-9 w-9 place-items-center rounded-full bg-surface text-foreground"
           aria-label="Open navigation"
           onClick={openMobileMenu}
         >
-          <Menu className="h-5 w-5" />
-        </Button>
-        <span className="sm:hidden">
-          <Logo compact />
-        </span>
-        <span className="hidden sm:inline-flex">
-          <Logo />
-        </span>
+          <Menu className="h-5 w-5" strokeWidth={1.8} />
+        </button>
       </div>
 
       <div className="hidden min-w-0 flex-1 items-center gap-4 lg:flex">
@@ -176,7 +168,7 @@ export const Topbar = () => {
             type="button"
             variant="secondary"
             size="sm"
-            onClick={openAuth}
+            onClick={() => openAuth()}
           >
             <UserRound className="h-4 w-4" />
             <span className="hidden sm:inline">Account</span>
