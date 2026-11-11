@@ -1,11 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { cn } from '../../lib/cn'
 import { mobileNavigationItems } from './navigation'
 
 export const MobileNavigation = () => {
+  const location = useLocation()
   const [hidden, setHidden] = useState(false)
   const lastScrollY = useRef(0)
+  const activeIndex = Math.max(
+    0,
+    mobileNavigationItems.findIndex(({ path }) =>
+      path === '/' ? location.pathname === '/' : location.pathname === path,
+    ),
+  )
 
   useEffect(() => {
     lastScrollY.current = window.scrollY
@@ -41,10 +48,18 @@ export const MobileNavigation = () => {
         hidden && 'mobile-navigation--hidden',
       )}
     >
+      <span
+        aria-hidden="true"
+        className="mobile-nav-glider"
+        style={{ '--mobile-nav-index': activeIndex } as CSSProperties}
+      />
       {mobileNavigationItems.map(({ label, path, icon: Icon }, index) => (
         <NavLink
           key={`${path}-${label}-${index}`}
           to={path}
+          state={{
+            pageDirection: index < activeIndex ? 'backward' : 'forward',
+          }}
           end={path === '/' && label === 'Home'}
           aria-label={label}
           onClick={() => setHidden(false)}

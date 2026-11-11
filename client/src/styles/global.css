@@ -417,31 +417,79 @@ button:disabled {
 }
 
 .app-page-transition {
-  animation: app-page-enter 120ms ease-out both;
+  animation-duration: 320ms;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.settings-panel-reveal {
-  transform-origin: top center;
-  animation: settings-panel-reveal 210ms cubic-bezier(0.22, 1, 0.36, 1) both;
+.app-page-transition--forward {
+  animation-name: app-page-enter-forward;
 }
 
-@keyframes settings-panel-reveal {
+.app-page-transition--backward {
+  animation-name: app-page-enter-backward;
+}
+
+.settings-accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  contain: layout paint style;
+  transition:
+    grid-template-rows 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease;
+}
+
+.settings-accordion-panel.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.settings-accordion-content {
+  min-height: 0;
+  overflow: hidden;
+  contain: content;
+}
+
+@keyframes app-page-enter-forward {
   from {
-    opacity: 0;
-    transform: translate3d(0, -5px, 0) scaleY(0.985);
+    opacity: 0.15;
+    transform: translate3d(24px, 0, 0) scale(0.992);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scaleY(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
-@keyframes app-page-enter {
+@keyframes app-page-enter-backward {
+  from {
+    opacity: 0.15;
+    transform: translate3d(-24px, 0, 0) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes app-page-enter-mobile {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes settings-content-enter-mobile {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -458,37 +506,51 @@ button:disabled {
 
 .mobile-nav-item {
   isolation: isolate;
-  transition: color 180ms ease;
+  transform: translateZ(0);
+  transition:
+    color 220ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.mobile-nav-item::before {
+.mobile-nav-glider {
   position: absolute;
-  z-index: -1;
-  inset: 0;
+  z-index: 0;
+  top: 0.375rem;
+  bottom: 0.375rem;
+  left: 0.375rem;
+  width: calc((100% - 0.75rem) / 5);
   border-radius: 999px;
   content: '';
-  opacity: 0;
-  background: color-mix(in srgb, var(--app-primary) 15%, transparent);
-  box-shadow: inset 0 0 0 1px
-    color-mix(in srgb, var(--app-primary) 22%, transparent);
-  transform: scale(0.68);
-  transition:
-    opacity 180ms ease,
-    transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.mobile-nav-item.is-active::before {
-  opacity: 1;
-  transform: scale(1);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--app-primary) 22%, transparent),
+    color-mix(in srgb, var(--app-accent) 10%, transparent)
+  );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--app-primary) 30%, transparent),
+    0 6px 18px color-mix(in srgb, var(--app-primary) 16%, transparent);
+  transform: translate3d(calc(var(--mobile-nav-index) * 100%), 0, 0);
+  transition: transform 360ms cubic-bezier(0.2, 0.9, 0.25, 1.12);
+  will-change: transform;
 }
 
 .mobile-nav-icon {
-  transform: scale(1);
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    filter 220ms ease,
+    transform 300ms cubic-bezier(0.2, 0.9, 0.25, 1.15);
+}
+
+.mobile-nav-item.is-active {
+  color: var(--app-secondary);
+  transform: translate3d(0, -1px, 0);
 }
 
 .mobile-nav-item.is-active .mobile-nav-icon {
-  transform: scale(1.08);
+  filter: drop-shadow(
+    0 3px 7px color-mix(in srgb, var(--app-primary) 42%, transparent)
+  );
+  transform: translate3d(0, -1px, 0) scale(1.1);
 }
 
 .mobile-nav-label {
@@ -636,10 +698,35 @@ button:disabled {
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
   }
 
-  .app-topbar {
-    height: calc(3.75rem + env(safe-area-inset-top));
+  .mobile-topbar-safe-area {
     padding-top: env(safe-area-inset-top);
     box-shadow: none;
+  }
+
+  .mobile-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .app-page-transition--forward,
+  .app-page-transition--backward {
+    animation-name: app-page-enter-mobile;
+    animation-duration: 160ms;
+  }
+
+  .settings-accordion-panel {
+    display: none;
+    opacity: 1;
+    transition: none;
+  }
+
+  .settings-accordion-panel.is-open {
+    display: block;
+    animation: settings-content-enter-mobile 160ms
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .settings-accordion-panel.is-open .settings-accordion-content {
+    contain: layout paint style;
   }
 
   .mobile-video-slider {

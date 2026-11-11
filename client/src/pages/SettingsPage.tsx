@@ -5,6 +5,7 @@ import {
   Check,
   ChevronDown,
   Coffee,
+  Crown,
   Database,
   Flame,
   Gem,
@@ -12,21 +13,24 @@ import {
   Heart,
   Leaf,
   Languages,
-  LockKeyhole,
   LogIn,
   LogOut,
   Moon,
   Palette,
   RotateCcw,
-  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Sun,
   UserPlus,
+  UserRound,
   Waves,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import toast from 'react-hot-toast'
+import {
+  LanguageFlag,
+  type LanguageFlagCode,
+} from '../components/common/LanguageFlag'
 import { Avatar, Badge, Button, Card, Select, Toggle } from '../components/ui'
 import { cn } from '../lib/cn'
 import { useAuthStore } from '../store/authStore'
@@ -35,9 +39,8 @@ import {
   type AppLanguage,
   type AppTheme,
 } from '../store/settingsStore'
+import { useSubscriptionStore } from '../store/subscriptionStore'
 import { useUiStore } from '../store/uiStore'
-
-type SettingsPanel = 'theme' | 'language'
 
 const appThemes: Array<{
   id: AppTheme
@@ -125,80 +128,155 @@ const appLanguages: Array<{
   id: AppLanguage
   label: string
   nativeLabel: string
-  flag: string
+  flagCode: LanguageFlagCode
   detail: string
 }> = [
   {
     id: 'system',
     label: 'System language',
     nativeLabel: 'Automatic',
-    flag: '🌐',
+    flagCode: 'system',
     detail: 'Follow this device',
   },
   {
     id: 'en',
     label: 'English',
     nativeLabel: 'English',
-    flag: '🇬🇧',
+    flagCode: 'gb',
     detail: 'United Kingdom',
   },
   {
     id: 'fr',
     label: 'French',
     nativeLabel: 'Français',
-    flag: '🇫🇷',
+    flagCode: 'fr',
     detail: 'France',
   },
   {
     id: 'ar',
     label: 'Arabic',
     nativeLabel: 'العربية',
-    flag: '🇸🇦',
+    flagCode: 'sa',
     detail: 'العربية',
   },
   {
     id: 'es',
     label: 'Spanish',
     nativeLabel: 'Español',
-    flag: '🇪🇸',
+    flagCode: 'es',
     detail: 'España',
   },
   {
     id: 'de',
     label: 'German',
     nativeLabel: 'Deutsch',
-    flag: '🇩🇪',
+    flagCode: 'de',
     detail: 'Deutschland',
   },
   {
     id: 'it',
     label: 'Italian',
     nativeLabel: 'Italiano',
-    flag: '🇮🇹',
+    flagCode: 'it',
     detail: 'Italia',
   },
   {
     id: 'pt',
     label: 'Portuguese',
     nativeLabel: 'Português',
-    flag: '🇵🇹',
+    flagCode: 'pt',
     detail: 'Portugal',
   },
   {
     id: 'ja',
     label: 'Japanese',
     nativeLabel: '日本語',
-    flag: '🇯🇵',
+    flagCode: 'jp',
     detail: '日本',
   },
   {
     id: 'zh',
     label: 'Chinese',
     nativeLabel: '中文',
-    flag: '🇨🇳',
+    flagCode: 'cn',
     detail: '中国',
   },
 ]
+
+interface SettingsSectionProps {
+  id: string
+  title: string
+  icon: ReactNode
+  iconClassName: string
+  defaultOpen?: boolean
+  children: ReactNode
+}
+
+const SettingsSection = ({
+  id,
+  title,
+  icon,
+  iconClassName,
+  defaultOpen = false,
+  children,
+}: SettingsSectionProps) => {
+  const [open, setOpen] = useState(defaultOpen)
+  const [hasOpened, setHasOpened] = useState(defaultOpen)
+
+  const toggle = () => {
+    if (!open) setHasOpened(true)
+    setOpen(!open)
+  }
+
+  return (
+    <Card
+      className={cn(
+        'overflow-hidden rounded-2xl transition-colors duration-200 sm:rounded-3xl',
+        open ? 'border-primary/45' : 'hover:border-primary/30',
+      )}
+    >
+      <button
+        id={`${id}-settings-trigger`}
+        type="button"
+        aria-expanded={open}
+        aria-controls={`${id}-settings-panel`}
+        onClick={toggle}
+        className="flex h-15 w-full items-center gap-3 px-3.5 text-left active:bg-elevated/45 sm:h-17 sm:px-5"
+      >
+        <span
+          className={cn(
+            'grid h-10 w-10 shrink-0 place-items-center rounded-xl',
+            iconClassName,
+          )}
+        >
+          {icon}
+        </span>
+        <span className="min-w-0 flex-1 text-sm font-semibold text-foreground sm:text-base">
+          {title}
+        </span>
+        <ChevronDown
+          className={cn(
+            'h-4 w-4 shrink-0 text-muted transition-transform duration-300',
+            open && 'rotate-180 text-secondary',
+          )}
+        />
+      </button>
+
+      <div
+        id={`${id}-settings-panel`}
+        role="region"
+        aria-labelledby={`${id}-settings-trigger`}
+        aria-hidden={!open}
+        inert={!open}
+        className={cn('settings-accordion-panel', open && 'is-open')}
+      >
+        <div className="settings-accordion-content">
+          {hasOpened ? children : null}
+        </div>
+      </div>
+    </Card>
+  )
+}
 
 export default function SettingsPage() {
   const user = useAuthStore((state) => state.user)
@@ -207,243 +285,100 @@ export default function SettingsPage() {
   const updateSetting = useSettingsStore((state) => state.updateSetting)
   const resetSettings = useSettingsStore((state) => state.resetSettings)
   const openAuth = useUiStore((state) => state.openAuth)
-  const [openPanel, setOpenPanel] = useState<SettingsPanel | null>(null)
-
-  const selectedTheme = useMemo(
-    () =>
-      appThemes.find((theme) => theme.id === settings.appTheme) ??
-      appThemes[0]!,
-    [settings.appTheme],
-  )
-  const selectedLanguage = useMemo(
-    () =>
-      appLanguages.find((language) => language.id === settings.appLanguage) ??
-      appLanguages[0]!,
-    [settings.appLanguage],
-  )
-
-  const togglePanel = (panel: SettingsPanel) => {
-    setOpenPanel((current) => (current === panel ? null : panel))
-  }
+  const openUpgrade = useSubscriptionStore((state) => state.openUpgrade)
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-3 pb-10 pt-3 sm:px-6 sm:pb-14 sm:pt-6 lg:px-8">
-      <header className="mb-5 px-1 sm:mb-6">
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary sm:text-xs">
-          Personal control center
-        </p>
-        <div className="mt-2 flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-[-0.04em] text-foreground sm:text-4xl">
-              Settings made personal.
-            </h1>
-            <p className="mt-2 max-w-2xl text-xs leading-5 text-muted sm:text-sm sm:leading-6">
-              Shape the interface, language, and learning experience around you.
-            </p>
-          </div>
-          <Badge variant="primary" className="w-fit">
-            Preferences save automatically
-          </Badge>
-        </div>
+    <div className="mx-auto w-full max-w-7xl px-3 pb-12 pt-4 sm:px-6 sm:pb-14 sm:pt-6 lg:px-8">
+      <header className="mb-4 px-1 sm:mb-6">
+        <h1 className="text-2xl font-bold tracking-[-0.04em] text-foreground sm:text-4xl">
+          Settings
+        </h1>
       </header>
 
-      <section className="relative overflow-hidden rounded-3xl border border-primary/25 bg-surface p-4 shadow-[var(--app-shadow-soft)] sm:p-6 lg:p-7">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_92%_0%,color-mix(in_srgb,var(--app-primary)_18%,transparent),transparent_36%)]" />
-        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-0 items-start gap-3.5 sm:items-center sm:gap-4">
-            {user ? (
-              <Avatar name={user.name} className="h-12 w-12 text-sm" />
-            ) : (
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-primary/25 to-accent/15 text-secondary ring-1 ring-primary/25">
-                <LockKeyhole className="h-5 w-5" />
-              </span>
-            )}
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-base font-bold text-foreground sm:text-lg">
-                  {user
-                    ? 'Your account is connected'
-                    : 'Unlock your full workspace'}
-                </h2>
-                {user && (
-                  <Badge variant={user.plan === 'pro' ? 'primary' : 'outline'}>
-                    {user.plan}
-                  </Badge>
-                )}
-              </div>
-              <p className="mt-1 max-w-2xl text-xs leading-5 text-muted sm:text-sm">
-                {user
-                  ? 'Your identity and account preferences are available in this session.'
-                  : 'Login or create a free account to access saved language profiles, vocabulary, and additional personalization.'}
-              </p>
-              {!user && (
-                <div className="mt-3 hidden flex-wrap gap-2 sm:flex">
-                  {[
-                    'Saved vocabulary',
-                    'Language profiles',
-                    'Personal progress',
-                  ].map((benefit) => (
-                    <span
-                      key={benefit}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-elevated/75 px-2.5 py-1 text-[10px] font-semibold text-muted"
-                    >
-                      <ShieldCheck className="h-3 w-3 text-success" />
-                      {benefit}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {user && (
-                <p className="mt-2 truncate text-[11px] text-muted">
-                  {user.name} · {user.email}
-                </p>
-              )}
-            </div>
+      {!user && (
+        <section className="mx-auto w-[95%] rounded-2xl border border-border bg-surface p-2.5 shadow-[var(--app-shadow-soft)] sm:w-full sm:rounded-3xl sm:p-4">
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              className="w-full sm:w-auto sm:min-w-32"
+              onClick={() => openAuth('login')}
+            >
+              <LogIn className="h-4 w-4" /> Login
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              className="w-full sm:w-auto sm:min-w-40"
+              onClick={() => openAuth('register')}
+            >
+              <UserPlus className="h-4 w-4" /> Create account
+            </Button>
           </div>
-
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row lg:min-w-72">
-            {user ? (
-              <Button
-                type="button"
-                variant="danger"
-                className="w-full sm:min-w-36"
-                onClick={logout}
-              >
-                <LogOut className="h-4 w-4" /> Sign out
-              </Button>
-            ) : (
-              <>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full sm:min-w-32"
-                  onClick={() => openAuth('login')}
-                >
-                  <LogIn className="h-4 w-4" /> Login
-                </Button>
-                <Button
-                  type="button"
-                  className="w-full sm:min-w-40"
-                  onClick={() => openAuth('register')}
-                >
-                  <UserPlus className="h-4 w-4" /> Create account
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section
-        className="mt-5 grid gap-3 lg:mt-6 lg:grid-cols-2 lg:gap-5"
-        aria-label="Interface preferences"
+        className="mx-auto mt-3 w-[95%] space-y-2.5 sm:mt-5 sm:w-full sm:space-y-3"
+        aria-label="Application settings"
       >
-        <button
-          type="button"
-          aria-expanded={openPanel === 'theme'}
-          aria-controls="theme-settings-panel"
-          onClick={() => togglePanel('theme')}
-          className={cn(
-            'group relative overflow-hidden rounded-3xl border bg-surface p-4 text-left shadow-[var(--app-shadow-soft)] transition-[border-color,transform] duration-200 active:scale-[0.99] sm:p-5',
-            openPanel === 'theme'
-              ? 'border-primary/45'
-              : 'border-border hover:border-primary/30',
-          )}
-        >
-          <div className="relative flex items-center gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/12 text-secondary sm:h-14 sm:w-14">
-              <Palette className="h-5 w-5 sm:h-6 sm:w-6" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted">
-                Appearance
-              </p>
-              <h2 className="mt-1 text-base font-bold text-foreground">
-                Theme
-              </h2>
-              <p className="mt-1 truncate text-xs text-muted">
-                {selectedTheme.label} · {selectedTheme.description}
-              </p>
-            </div>
-            <div
-              className={cn(
-                'h-12 w-12 shrink-0 rounded-2xl p-1.5',
-                selectedTheme.preview,
-              )}
-            >
-              <div
-                className={cn(
-                  'h-full rounded-xl ring-1 ring-white/10',
-                  selectedTheme.panel,
+        {user && (
+          <SettingsSection
+            id="account"
+            title="Account"
+            icon={<UserRound className="h-4.5 w-4.5" />}
+            iconClassName="bg-gradient-to-br from-primary/22 to-secondary/12 text-secondary ring-1 ring-primary/20"
+          >
+            <div className="grid gap-2 border-t border-border p-3 sm:grid-cols-2 sm:gap-3 sm:p-5">
+              <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-border/70 bg-elevated/40 p-3.5">
+                <Avatar name={user.name} className="h-11 w-11 shrink-0" />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {user.name}
+                  </p>
+                  <p className="mt-0.5 truncate text-xs text-muted">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-elevated/40 p-3.5">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-warning/12 text-warning">
+                  <Crown className="h-4.5 w-4.5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted">
+                    Membership
+                  </p>
+                  <p className="mt-0.5 text-sm font-semibold capitalize text-foreground">
+                    {user.plan}
+                  </p>
+                </div>
+                {user.plan === 'pro' ? (
+                  <Badge variant="primary">Active</Badge>
+                ) : (
+                  <Button type="button" size="sm" onClick={openUpgrade}>
+                    Upgrade
+                  </Button>
                 )}
-              />
+              </div>
             </div>
-            <ChevronDown
-              className={cn(
-                'h-4 w-4 shrink-0 text-muted transition-transform duration-200',
-                openPanel === 'theme' && 'rotate-180 text-secondary',
-              )}
-            />
-          </div>
-        </button>
+          </SettingsSection>
+        )}
 
-        <button
-          type="button"
-          aria-expanded={openPanel === 'language'}
-          aria-controls="language-settings-panel"
-          onClick={() => togglePanel('language')}
-          className={cn(
-            'group relative overflow-hidden rounded-3xl border bg-surface p-4 text-left shadow-[var(--app-shadow-soft)] transition-[border-color,transform] duration-200 active:scale-[0.99] sm:p-5',
-            openPanel === 'language'
-              ? 'border-primary/45'
-              : 'border-border hover:border-primary/30',
-          )}
+        <SettingsSection
+          id="theme"
+          title="Theme"
+          icon={
+            <>
+              <span className="absolute -right-2 -top-2 h-5 w-5 rounded-full bg-accent/20 blur-sm" />
+              <Palette className="relative h-4.5 w-4.5" />
+            </>
+          }
+          iconClassName="relative overflow-hidden bg-gradient-to-br from-primary/25 to-accent/12 text-secondary ring-1 ring-primary/25"
         >
-          <div className="relative flex items-center gap-4">
-            <span
-              role="img"
-              aria-label={selectedLanguage.label}
-              className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-elevated text-3xl ring-1 ring-border sm:h-14 sm:w-14"
-            >
-              {selectedLanguage.flag}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted">
-                Interface
-              </p>
-              <h2 className="mt-1 text-base font-bold text-foreground">
-                Application language
-              </h2>
-              <p className="mt-1 truncate text-xs text-muted">
-                {selectedLanguage.nativeLabel} · {selectedLanguage.detail}
-              </p>
-            </div>
-            <Globe2 className="hidden h-5 w-5 text-secondary sm:block" />
-            <ChevronDown
-              className={cn(
-                'h-4 w-4 shrink-0 text-muted transition-transform duration-200',
-                openPanel === 'language' && 'rotate-180 text-secondary',
-              )}
-            />
-          </div>
-        </button>
-      </section>
-
-      {openPanel === 'theme' && (
-        <Card
-          id="theme-settings-panel"
-          className="settings-panel-reveal mt-3 overflow-hidden border-primary/20 lg:mt-5"
-        >
-          <div className="border-b border-border px-4 py-4 sm:px-6">
-            <h2 className="text-sm font-bold text-foreground">
-              Choose your visual atmosphere
-            </h2>
-            <p className="mt-1 text-xs text-muted">
-              The video border, transcript, navigation, and native Android bars
-              follow your selection.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5 p-3 sm:grid-cols-3 sm:gap-3 sm:p-5 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-2 border-t border-border p-3 sm:grid-cols-3 sm:gap-3 sm:p-5 lg:grid-cols-5">
             {appThemes.map(
               ({ id, label, description, icon: Icon, preview, panel }) => {
                 const selected = settings.appTheme === id
@@ -454,14 +389,17 @@ export default function SettingsPage() {
                     aria-pressed={selected}
                     onClick={() => updateSetting('appTheme', id)}
                     className={cn(
-                      'group relative overflow-hidden rounded-2xl border p-2.5 text-left transition-[border-color,background-color,transform] duration-200 active:scale-[0.98] sm:p-3',
+                      'group relative block overflow-hidden rounded-2xl border p-2.5 text-left transition-[border-color,background-color,transform] duration-200 active:scale-[0.98] sm:p-3',
                       selected
                         ? 'border-primary/55 bg-primary/10'
                         : 'border-border bg-elevated/45 hover:border-border-strong',
                     )}
                   >
                     <div
-                      className={cn('h-16 rounded-xl p-1.5 sm:h-20', preview)}
+                      className={cn(
+                        'h-11 w-full rounded-xl p-1.5 sm:h-20',
+                        preview,
+                      )}
                     >
                       <div
                         className={cn(
@@ -473,7 +411,7 @@ export default function SettingsPage() {
                         <span className="absolute inset-x-2 bottom-2 h-6 rounded-md bg-white/6" />
                       </div>
                     </div>
-                    <div className="mt-2.5 flex items-start gap-2">
+                    <div className="mt-2 flex min-w-0 items-start gap-2 sm:mt-2.5">
                       <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-secondary" />
                       <span className="min-w-0">
                         <span className="block truncate text-xs font-bold text-foreground">
@@ -494,129 +432,16 @@ export default function SettingsPage() {
               },
             )}
           </div>
-        </Card>
-      )}
+        </SettingsSection>
 
-      {openPanel === 'language' && (
-        <Card
-          id="language-settings-panel"
-          className="settings-panel-reveal mt-3 overflow-hidden border-primary/20 lg:mt-5"
+        <SettingsSection
+          id="translation"
+          title="Translation language"
+          icon={<Languages className="h-4.5 w-4.5" />}
+          iconClassName="bg-gradient-to-br from-success/20 to-accent/10 text-success ring-1 ring-success/20"
         >
-          <div className="flex flex-col gap-3 border-b border-border px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div>
-              <h2 className="text-sm font-bold text-foreground">
-                Choose the application language
-              </h2>
-              <p className="mt-1 text-xs text-muted">
-                This preference sets the interface locale and reading direction.
-              </p>
-            </div>
-            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-elevated px-3 py-1.5 text-[10px] font-semibold text-muted">
-              <Globe2 className="h-3.5 w-3.5 text-secondary" />
-              {selectedLanguage.nativeLabel}
-            </span>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5 p-3 sm:grid-cols-3 sm:gap-3 sm:p-5 lg:grid-cols-5">
-            {appLanguages.map(({ id, label, nativeLabel, flag, detail }) => {
-              const selected = settings.appLanguage === id
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  dir="auto"
-                  aria-pressed={selected}
-                  onClick={() => updateSetting('appLanguage', id)}
-                  className={cn(
-                    'relative flex min-h-31 flex-col items-center justify-center rounded-2xl border px-3 py-4 text-center transition-[border-color,background-color,transform] duration-200 active:scale-[0.97]',
-                    selected
-                      ? 'border-primary/55 bg-primary/10'
-                      : 'border-border bg-elevated/45 hover:border-border-strong hover:bg-elevated',
-                  )}
-                >
-                  {selected && (
-                    <span className="absolute right-2.5 top-2.5 grid h-5 w-5 place-items-center rounded-full bg-primary text-white">
-                      <Check className="h-3 w-3" />
-                    </span>
-                  )}
-                  <span
-                    role="img"
-                    aria-label={label}
-                    className="text-4xl leading-none drop-shadow-sm"
-                  >
-                    {flag}
-                  </span>
-                  <span className="mt-3 text-xs font-bold text-foreground">
-                    {nativeLabel}
-                  </span>
-                  <span className="mt-1 text-[9px] text-muted">
-                    {id === 'system' ? detail : label}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        </Card>
-      )}
-
-      <div className="mt-5 grid items-start gap-5 xl:mt-6 xl:grid-cols-[1.08fr_0.92fr]">
-        <Card className="overflow-hidden">
-          <div className="flex items-center gap-3 border-b border-border px-4 py-4 sm:px-6">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent/10 text-accent">
-              <SlidersHorizontal className="h-4.5 w-4.5" />
-            </span>
-            <div>
-              <h2 className="text-sm font-semibold text-foreground">
-                Learning behavior
-              </h2>
-              <p className="mt-0.5 text-xs text-muted">
-                Set comfortable defaults for every lesson.
-              </p>
-            </div>
-          </div>
-          <div className="divide-y divide-border px-4 py-2 sm:px-6">
-            <Toggle
-              checked={settings.keepActiveCentered}
-              onCheckedChange={(value) =>
-                updateSetting('keepActiveCentered', value)
-              }
-              label="Center the active sentence"
-              description="Position the current sentence near the middle."
-            />
-            <Toggle
-              checked={settings.showTranslations}
-              onCheckedChange={(value) =>
-                updateSetting('showTranslations', value)
-              }
-              label="Show translations by default"
-              description="Display available translations when lessons open."
-            />
-            <Toggle
-              checked={settings.showTimestamps}
-              onCheckedChange={(value) =>
-                updateSetting('showTimestamps', value)
-              }
-              label="Show sentence timestamps"
-              description="Keep video times visible beside transcript lines."
-            />
-          </div>
-        </Card>
-
-        <div className="space-y-5">
-          <Card className="p-4 sm:p-6">
-            <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-success/10 text-success">
-                <Languages className="h-4.5 w-4.5" />
-              </span>
-              <div>
-                <h2 className="text-sm font-semibold text-foreground">
-                  Translation language
-                </h2>
-                <p className="mt-0.5 text-xs text-muted">
-                  Separate from the application interface language.
-                </p>
-              </div>
-            </div>
-            <label className="mt-5 block">
+          <div className="border-t border-border p-3 sm:p-5">
+            <label className="block">
               <span className="mb-2 block text-xs font-semibold text-muted">
                 Translate captions into
               </span>
@@ -632,44 +457,148 @@ export default function SettingsPage() {
                   value: code,
                   label: languageNames[code],
                 }))}
-                className="h-12 rounded-xl"
+                className="h-11 rounded-xl"
               />
             </label>
-            <div className="mt-4 flex items-start gap-2 rounded-xl border border-border bg-elevated/60 p-3 text-[11px] leading-5 text-muted">
+            <div className="mt-3 flex items-start gap-2 rounded-xl border border-border bg-elevated/60 p-3 text-[11px] leading-5 text-muted">
               <Captions className="mt-0.5 h-3.5 w-3.5 shrink-0 text-secondary" />
               Caption translations refresh independently from the app language.
             </div>
-          </Card>
+          </div>
+        </SettingsSection>
 
-          <Card className="p-4 sm:p-6">
-            <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-warning/10 text-warning">
-                <Database className="h-4.5 w-4.5" />
-              </span>
-              <div>
-                <h2 className="text-sm font-semibold text-foreground">
-                  Reset preferences
-                </h2>
-                <p className="mt-0.5 text-xs text-muted">
-                  Return all interface and transcript settings to defaults.
-                </p>
-              </div>
+        <SettingsSection
+          id="language"
+          title="Application language"
+          icon={<Globe2 className="h-4.5 w-4.5" />}
+          iconClassName="bg-gradient-to-br from-secondary/20 to-primary/10 text-secondary ring-1 ring-primary/20"
+        >
+          <div className="grid grid-cols-2 gap-2 border-t border-border p-3 sm:gap-3 sm:p-5 lg:grid-cols-5">
+            {appLanguages.map(
+              ({ id, label, nativeLabel, flagCode, detail }) => {
+                const selected = settings.appLanguage === id
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    dir="auto"
+                    aria-pressed={selected}
+                    onClick={() => updateSetting('appLanguage', id)}
+                    className={cn(
+                      'relative flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border px-2 py-3 text-center transition-[border-color,background-color,transform] duration-200 active:scale-[0.97] sm:min-h-31 sm:px-4 sm:py-4',
+                      selected
+                        ? 'border-primary/55 bg-primary/10'
+                        : 'border-border bg-elevated/45 hover:border-border-strong hover:bg-elevated',
+                    )}
+                  >
+                    {selected && (
+                      <span className="absolute right-2.5 top-2.5 grid h-5 w-5 place-items-center rounded-full bg-primary text-white">
+                        <Check className="h-3 w-3" />
+                      </span>
+                    )}
+                    <LanguageFlag
+                      code={flagCode}
+                      label={label}
+                      className="h-9 w-13.5 sm:h-12 sm:w-18"
+                    />
+                    <span className="min-w-0 max-w-full px-3 sm:px-0">
+                      <span className="block truncate text-xs font-bold text-foreground">
+                        {nativeLabel}
+                      </span>
+                      <span className="mt-1 hidden truncate text-[9px] text-muted sm:block">
+                        {id === 'system' ? detail : `${label} · ${detail}`}
+                      </span>
+                    </span>
+                  </button>
+                )
+              },
+            )}
+          </div>
+        </SettingsSection>
+
+        <SettingsSection
+          id="behavior"
+          title="Learning behavior"
+          icon={<SlidersHorizontal className="h-4.5 w-4.5" />}
+          iconClassName="bg-gradient-to-br from-accent/20 to-primary/10 text-accent ring-1 ring-accent/20"
+        >
+          <div className="space-y-2 border-t border-border p-3 sm:px-5 sm:py-4">
+            <div className="rounded-xl border border-border/70 bg-elevated/35 px-3 py-1.5">
+              <Toggle
+                checked={settings.keepActiveCentered}
+                onCheckedChange={(value) =>
+                  updateSetting('keepActiveCentered', value)
+                }
+                label="Center the active sentence"
+                description="Position the current sentence near the middle."
+              />
             </div>
-            <Button
-              type="button"
-              variant="secondary"
-              className="mt-5 w-full"
-              onClick={() => {
-                resetSettings()
-                setOpenPanel(null)
-                toast.success('Learning preferences reset')
-              }}
-            >
-              <RotateCcw className="h-4 w-4" /> Reset to defaults
-            </Button>
-          </Card>
-        </div>
+            <div className="rounded-xl border border-border/70 bg-elevated/35 px-3 py-1.5">
+              <Toggle
+                checked={settings.showTranslations}
+                onCheckedChange={(value) =>
+                  updateSetting('showTranslations', value)
+                }
+                label="Show translations by default"
+                description="Display available translations when lessons open."
+              />
+            </div>
+            <div className="rounded-xl border border-border/70 bg-elevated/35 px-3 py-1.5">
+              <Toggle
+                checked={settings.showTimestamps}
+                onCheckedChange={(value) =>
+                  updateSetting('showTimestamps', value)
+                }
+                label="Show sentence timestamps"
+                description="Keep video times visible beside transcript lines."
+              />
+            </div>
+          </div>
+        </SettingsSection>
+      </section>
+
+      <div className="mx-auto mt-3 w-[95%] sm:mt-5 sm:w-full">
+        <Card className="rounded-[1.75rem] p-4 sm:p-6">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-warning/10 text-warning">
+              <Database className="h-4.5 w-4.5" />
+            </span>
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">
+                Reset preferences
+              </h2>
+              <p className="mt-0.5 text-xs text-muted">
+                Return all interface and transcript settings to defaults.
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="secondary"
+            className="mt-5 w-full"
+            onClick={() => {
+              resetSettings()
+              toast.success('Learning preferences reset')
+            }}
+          >
+            <RotateCcw className="h-4 w-4" /> Reset to defaults
+          </Button>
+        </Card>
       </div>
+
+      {user && (
+        <section className="mx-auto mt-3 w-[95%] rounded-2xl border border-border bg-surface p-2.5 shadow-[var(--app-shadow-soft)] sm:mt-5 sm:w-full sm:rounded-3xl sm:p-4">
+          <Button
+            type="button"
+            variant="danger"
+            size="sm"
+            className="w-full sm:ml-auto sm:flex sm:w-auto sm:min-w-36"
+            onClick={logout}
+          >
+            <LogOut className="h-4 w-4" /> Sign out
+          </Button>
+        </section>
+      )}
     </div>
   )
 }

@@ -32,7 +32,10 @@ export const syncNativeSystemBars = async (theme: AppTheme) => {
     StatusBar.setStyle({
       style: isLight ? StatusBarStyle.Dark : StatusBarStyle.Light,
     }),
-    EdgeToEdge.disable(),
+    // Keep the WebView inset below Android's status bar and display cutout.
+    // Disabling this plugin removes those insets and lets the mobile top bar
+    // render underneath the notch on Android 15+.
+    EdgeToEdge.enable(),
     EdgeToEdge.setStatusBarColor({ color }),
     EdgeToEdge.setNavigationBarColor({ color }),
     NavigationBar.setColor({ color, dividerColor: 'transparent' }),
